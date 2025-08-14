@@ -28,7 +28,7 @@ from generator import ansi, RESET
 
 ansi_code = ansi(
     text_color = "#00FF00",
-    bg_color = "#0000Ff",
+    bg_color = "#0000FF",
     color_mode = "true_color"
 )
 

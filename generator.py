@@ -228,5 +228,3 @@ if os.name == "nt":
         kernel32.SetConsoleMode(handle, 0x0001 | 0x0002 | 0x0004)
     except Exception:
         pass
-
-help(ansi)

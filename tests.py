@@ -1,4 +1,4 @@
-from generator import ansi, RESET
+from generator import ansi, RESET, text_color_palette
 
 print("=== 8/16 Colors (Text Only) ===")
 for name in text_color_palette.keys():

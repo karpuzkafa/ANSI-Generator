@@ -31,7 +31,7 @@ def ansi(
     reverse: bool = False,
     dim: bool = False,
     strike: bool = False
-) -> str::
+) -> str:
     """
     Generate ANSI escape codes for terminal text styling with flexible color modes and text effects.
 

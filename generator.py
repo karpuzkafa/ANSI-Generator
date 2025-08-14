@@ -31,10 +31,108 @@ def ansi(
     reverse: bool = False,
     dim: bool = False,
     strike: bool = False
-) -> str:
+) -> str::
     """
+    Generate ANSI escape codes for terminal text styling with flexible color modes and text effects.
+
+    This function constructs ANSI escape sequences to apply foreground (text) and background colors, 
+    as well as text attributes like bold, italic, underline, blink, reverse, dim, and strikethrough. 
+    It supports multiple color modes including the 8/16 basic colors, 256-color palette, and true-color (24-bit RGB). 
+    Both RGB tuples and hexadecimal color codes are accepted for high-color modes.
     
+    Parameters
+    ----------
+    text_color : str | list | tuple, optional
+        Foreground color.
+        - For `"8/16"` mode: specify a color name from the predefined palette (`black`, `red`, `green`, `bright_blue`, etc.).
+        - For `"256"` or `"true_color"`: specify either:
+            - Hex string (e.g., "#FF8800") 
+            - RGB list or tuple (e.g., [255, 136, 0] or (255, 136, 0)) if `use_rgb=True`.
+
+    bg_color : str | list | tuple, optional
+        Background color. Follows the same rules as `text_color`.
+
+    use_rgb : bool, default=False
+        If True, interprets `text_color` and `bg_color` as RGB values (list or tuple of three integers).
+
+    color_mode : str, optional
+        Global color mode applied to both text and background. Possible values:
+        - `"8/16"` — use basic color palette
+        - `"256"` — use 256-color mode
+        - `"true_color"` — use 24-bit RGB color mode
+        Ignored if `lcolor_mode` is specified.
+
+    lcolor_mode : list, optional
+        List specifying individual color modes `[text_mode, bg_mode]` for text and background, overriding `color_mode`.
+
+    bold : bool, default=False
+        Apply bold formatting.
+
+    italic : bool, default=False
+        Apply italic formatting (may not be supported in all terminals).
+
+    under_line : bool, default=False
+        Underline the text.
+
+    blink : bool, default=False
+        Make text blink (rarely supported; may display as bold).
+
+    reverse : bool, default=False
+        Swap foreground and background colors.
+
+    dim : bool, default=False
+        Dim the text appearance.
+
+    strike : bool, default=False
+        Apply strikethrough effect.
+
+    Returns
+    -------
+    str
+        ANSI escape sequence string. Concatenate with your text and reset formatting using `RESET`.
+
+    Raises
+    ------
+    ValueError
+        Raised if:
+        - `color_mode` or `lcolor_mode` is not specified or invalid
+        - `text_color` or `bg_color` does not match the selected mode
+        - RGB values are not a list/tuple of three integers
+        - Hex color code does not start with '#'
+
+    8/16 Color Palette
+    ------------------
+    \033[30mblack\033[0m\t\033[90mbright_black\033[0m
+    \033[31mred\033[0m\t\033[91mbright_red\033[0m
+    \033[32mgreen\033[0m\t\033[92mbright_green\033[0m
+    \033[33myellow\033[0m\t\033[93mbright_yellow\033[0m
+    \033[34mblue\033[0m\t\033[94mbright_blue\033[0m
+    \033[35mmagenta\033[0m\t\033[95mbright_magenta\033[0m
+    \033[36mcyan\033[0m\t\033[96mbright_cyan\033[0m
+    \033[37mwhite\033[0m\t\033[97mbright_white\033[0m
+
+
+    Examples
+    --------
+    Basic 8/16 color usage:
+    >>> print(ansi("red", "black", color_mode="8/16") + "Hello" + RESET)
+
+    Using 256-color mode with RGB:
+    >>> print(ansi([255, 136, 0], [0, 68, 255], use_rgb=True, color_mode="256") + "Hello" + RESET)
+
+    True-color (24-bit) with hex strings:
+    >>> print(ansi("#FF0000", "#00FF00", color_mode="true_color") + "Hello" + RESET)
+
+    Different modes for text and background:
+    >>> print(ansi("#FF0000", "bright_green", lcolor_mode=["256", "8/16"]) + "Hello" + RESET)
+
+    Notes
+    -----
+    - Some terminals may not fully support italic, blink, or strike effects.
+    - On Windows, ANSI escape sequences are automatically enabled if possible.
+    - This function can be combined with other ANSI codes for more advanced styling.
     """
+
     
     code = ""
     
@@ -115,6 +213,12 @@ def ansi(
 
     return "\033[" + code.strip(";") + "m"
 
+def get_basic_color_palette():
+    """
+    Print 8/16 color palette
+    """
+    for k, v in text_color_palette.items():
+        print(f"\033[{v}m\"{k}\"")
 
 # Automaticaly fix for Windows
 if os.name == "nt":
